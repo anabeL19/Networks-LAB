@@ -12,20 +12,11 @@
 
 using namespace std;
 
-void r_ead(int SocketFD)
-{
-  int n=0;
-  char *msg_buffer, *all_msg;
-  msg_buffer = new char[1];
-    n = read(SocketFD, msg_buffer,1);
-  msg_buffer = new char[6];
-    n = read(SocketFD, msg_buffer, 6);
-  msg_buffer = new char[6];
-    n = read(SocketFD, msg_buffer, 6);
-  int msg_size = atoi(SocketFD);
-  all_msg = new char[msg_size];
-    n = read(SocketFD, all_msg,msg_size);
-    cout<<"mensaje--->"<<all_msg<<endl;
+string convert(string mensaje, int tam){
+    string tmp = "";
+    for(int i=0; i<tam; i++)
+        tmp += mensaje[i];
+        return tmp;
 }
 
 int main(void)
@@ -33,8 +24,6 @@ int main(void)
     //sockaddr_in > basic structures for all syscalls and functions that deal with internet addresses
     struct sockaddr_in stSockAddr;
     int SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    char buffer[256];
-    int n;
 
     if(-1 == SocketFD)
     {
@@ -45,7 +34,7 @@ int main(void)
     memset(&stSockAddr, 0, sizeof(struct sockaddr_in));
 
     stSockAddr.sin_family = AF_INET;
-    stSockAddr.sin_port = htons(1200);
+    stSockAddr.sin_port = htons(1100);
     stSockAddr.sin_addr.s_addr = INADDR_ANY; // aqui indica una sola tarjeta de red
 
     if(-1 == bind(SocketFD,(const struct sockaddr *)&stSockAddr, sizeof(struct sockaddr_in))){
@@ -59,21 +48,29 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    for(;;){
-        //cuando el cliente se conecta se cnecta con el accept y el socket descriptor que me va a indicar la conexion, 
-        //socket del servidor
-        int ConnectFD = accept(SocketFD, NULL, NULL);
+    //when client connect with accept and this socket designate the connection socket server
+    int ConnectFD = accept(SocketFD, NULL, NULL);
 
-        if(0 > ConnectFD){
-            perror("error accept failed");
-            close(SocketFD);
-            exit(EXIT_FAILURE);
-        }
-
-    char msg[256];
-    thread tr(r_ead, SocketFD);
-    tr.join();
-
+    if(0 > ConnectFD){
+      perror("error accept failed");
+      close(SocketFD);
+      exit(EXIT_FAILURE);
+    }
+    
+    int b_size = 1000;//buffer size
+    char buffer[b_size];
+    int n;
+    string txt;
+    string msg;
+    // for(;;){ 
+    bzero(buffer, b_size); 
+    n = read(ConnectFD, buffer, b_size);
+    cout<<"----> "<<buffer<<endl;
+    
+    msg = s_hash(buffer);
+    n = write(ConnectFD, msg.c_str(), msg.size());
+    cout<<"recived hash server-> "<<msg<<endl;
+//    } 
     close(SocketFD);
     return 0;
 }
