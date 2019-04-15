@@ -1,3 +1,4 @@
+// g++ client.cpp -o c -std=c++11
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -30,34 +31,6 @@ string readFile(string name)
 	file.close();
   return txt;
 }
-
-// void w_rite(int SocketFD, int buffer_size){
-//   // ifstream file("text.file", ifstream::binary);
-//   // file.seekg(0, file.end);
-//   // long size = file.tellg();
-//   // file.seekg(0, file.beg);
-
-//   // char *txt_plane = new char[size];
-//   // file.read(txt_plane, size);
-//   string txt_plane;
-//   txt_plane = readFile("text.file");
-//   cout<<"txt_plane "<<txt_plane<<endl;
-//   char buffer[2];
-//   string htxt;
-//   int n;
-//   string t;
-//   htxt = s_hash(txt_plane);
-//   cout<<"sending hash client ---"<<htxt<<endl;
-//   t = s_hash(htxt);
-//   cout<<"sending222 ---"<<t<<endl;
-// 	// n = write(SocketFD, htxt.c_str(), htxt.size());
-// 	// cout<<"sending ---"<<htxt<<endl;
-//   // n = read(SocketFD, buffer, 1);
-//   // cout<<"buffer server"<<buffer<<endl;
-// 	// if(n < 0) perror("Error writting to socket");
-//   // if(string(buffer)==htxt)cout<<"ready "<<txt_plane<<"####"<<endl;
-//   // else cout<<"error "<<txt_plane<<"*****"<<endl;
-// }
 
 int main(int argc, char *argv[])
 {
@@ -100,10 +73,10 @@ int main(int argc, char *argv[])
   int n;
   string t;
   htxt = s_hash(txt_plane);
-  n = write(SocketFD, htxt.c_str(), htxt.size());
-	cout<<"sending hash client ---"<<htxt<<endl;
+  n = write(SocketFD, txt_plane.c_str(), txt_plane.size());
+	cout<<"hash client ---"<<htxt<<endl;
   n = read(SocketFD, buffer, 4);
-  cout<<"buffer server"<<string(buffer)<<" - "<<buffer<<endl;
+  cout<<"recieve server"<<string(buffer)<<" - "<<buffer<<endl;
 	if(n < 0) perror("Error writting to socket");
   if(string(buffer) == htxt)cout<<"ready "<<endl;
   else cout<<"error "<<endl;

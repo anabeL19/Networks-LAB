@@ -1,3 +1,4 @@
+// g++ server.cpp -o s -std=c++11
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -11,13 +12,6 @@
 #include "hash.h"
 
 using namespace std;
-
-string convert(string mensaje, int tam){
-    string tmp = "";
-    for(int i=0; i<tam; i++)
-        tmp += mensaje[i];
-        return tmp;
-}
 
 int main(void)
 {
@@ -69,7 +63,7 @@ int main(void)
     
     msg = s_hash(buffer);
     n = write(ConnectFD, msg.c_str(), msg.size());
-    cout<<"recived hash server-> "<<msg<<endl;
+    cout<<"send hash server-> "<<msg<<endl;
 //    } 
     close(SocketFD);
     return 0;
